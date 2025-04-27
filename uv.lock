@@ -1,0 +1,35 @@
+version = 1
+revision = 1
+requires-python = ">=3.13"
+
+[[package]]
+name = "six"
+version = "1.17.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/94/e7/b2c673351809dca68a0e064b6af791aa332cf192da575fd474ed7d6f16a2/six-1.17.0.tar.gz", hash = "sha256:ff70335d468e7eb6ec65b95b99d3a2836546063f63acc5171de367e834932a81", size = 34031 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/b7/ce/149a00dd41f10bc29e5921b496af8b574d8413afcd5e30dfa0ed46c2cc5e/six-1.17.0-py2.py3-none-any.whl", hash = "sha256:4721f391ed90541fddacab5acf947aa0d3dc7d27b2e1e8eda2be8970586c3274", size = 11050 },
+]
+
+[[package]]
+name = "tmp"
+version = "0.1.0"
+source = { virtual = "." }
+dependencies = [
+    { name = "treelib" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "treelib", specifier = ">=1.7.1" }]
+
+[[package]]
+name = "treelib"
+version = "1.7.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "six" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/ad/e2/aae318906d39f160eb5b1046119da6706588d14f0a2d0fe202c9a0db46dd/treelib-1.7.1.tar.gz", hash = "sha256:a2b57ba38290f7da6af97b41de8ff7be98e7a8c00815f95d0782241f77503952", size = 26014 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/01/da/66fb7b0f91a4329d5e0dd49a7464a1ced62a9d495362ae4c5cc055f268ba/treelib-1.7.1-py3-none-any.whl", hash = "sha256:69aa12559c603273c77580cc86089021756654a754a7c674038de20f9daeafde", size = 19339 },
+]
