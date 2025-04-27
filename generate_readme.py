@@ -14,7 +14,7 @@ def get_py_files_info():
                     'name': file,
                     'description': comment
                 })
-    return files_info
+    return sorted(files_info, key=lambda x: x['name'])  # 按文件名排序
 
 def generate_markdown():
     """生成Markdown内容"""
@@ -32,7 +32,9 @@ def generate_markdown():
     markdown += "|--------|------|\n"
     
     for file_info in files_info:
-        markdown += f"| {file_info['name']} | {file_info['description']} |\n"
+        # 创建文件链接，使用相对路径
+        file_link = f"[{file_info['name']}](./{file_info['name']})"
+        markdown += f"| {file_link} | {file_info['description']} |\n"
     
     return markdown
 
