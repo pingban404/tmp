@@ -1,9 +1,15 @@
 [project]
-name = "tmp"
+name = "mianshi1"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
-    "treelib>=1.7.1",
+    "matplotlib>=3.10.3",
+    "numpy>=2.3.1",
+    "openpyxl>=3.1.5",
+    "pandas>=2.3.0",
+    "pyecharts>=2.0.8",
+    "rich>=14.0.0",
+    "snapshot-selenium>=0.0.2",
 ]
