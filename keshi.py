@@ -84,8 +84,8 @@ def create_dynamic_combined_chart(df, x_column=None, output_filename="default.pn
     height: float - 图片高度（英寸）
     transparent: bool - 是否使用透明背景
     show_markers: bool - 是否显示折线图的标记点
-    chart_type_dict: dict - 指定每个列使用柱状图还是折线图，格式：{'列名': 'bar'/'line'}
-                      'bar': 柱状图, 'line': 折线图, 未指定的列默认使用柱状图
+    chart_type_dict: dict - 指定每个列使用柱状图还是折线图，格式：{'列名': 'bar'/'line'/'both'}
+                      'bar': 柱状图, 'line': 折线图, 'both': 柱状图+折线图, 未指定的列默认使用柱状图
     """
     
     # 清理和转换数据
@@ -112,9 +112,14 @@ def create_dynamic_combined_chart(df, x_column=None, output_filename="default.pn
     
     for column in numeric_columns:
         chart_type = chart_type_dict.get(column, 'bar')  # 默认使用柱状图
-        if chart_type.lower() == 'line':
+        chart_type = chart_type.lower()
+        
+        if chart_type == 'line':
             line_columns.append(column)
-        else:
+        elif chart_type == 'both':
+            bar_columns.append(column)
+            line_columns.append(column)
+        else:  # 'bar' 或未指定
             bar_columns.append(column)
     
     print(f"检测到的数值列：{numeric_columns}")
@@ -188,7 +193,7 @@ def create_dynamic_combined_chart(df, x_column=None, output_filename="default.pn
     ax2.set_ylabel('趋势值', color='gray')
     
     # 动态生成标题
-    all_columns = bar_columns + line_columns
+    all_columns = list(set(bar_columns + line_columns))  # 去重
     if len(all_columns) <= 3:
         title = f"{'、'.join(all_columns)}数据分析 (柱状图+折线图)"
     else:
@@ -280,7 +285,7 @@ if __name__ == '__main__':
     
     # 指定图表类型字典
     chart_types = {
-        'GDP价值': 'bar',  # 柱状图
+        'GDP价值': 'both',  # 柱状图+折线图
         '趋势': 'line',   # 折线图
         # '投资额': 'bar',    # 柱状图
         # '消费额': 'line'    # 折线图
