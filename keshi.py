@@ -71,7 +71,8 @@ def clean_and_convert_data(df, x_column=None):
     return df_cleaned
 
 def create_dynamic_combined_chart(df, x_column=None, output_filename="default.png", 
-                                 width=15, height=8, transparent=True, show_markers=True):
+                                 width=15, height=8, transparent=True, show_markers=True,
+                                 chart_type_dict=None):
     """
     创建通用的柱状图+折线图组合
     
@@ -83,6 +84,8 @@ def create_dynamic_combined_chart(df, x_column=None, output_filename="default.pn
     height: float - 图片高度（英寸）
     transparent: bool - 是否使用透明背景
     show_markers: bool - 是否显示折线图的标记点
+    chart_type_dict: dict - 指定每个列使用柱状图还是折线图，格式：{'列名': 'bar'/'line'}
+                      'bar': 柱状图, 'line': 折线图, 未指定的列默认使用柱状图
     """
     
     # 清理和转换数据
@@ -99,7 +102,24 @@ def create_dynamic_combined_chart(df, x_column=None, output_filename="default.pn
     if x_column and x_column in numeric_columns:
         numeric_columns.remove(x_column)
     
+    # 处理图表类型字典
+    if chart_type_dict is None:
+        chart_type_dict = {}
+    
+    # 分离柱状图和折线图的列
+    bar_columns = []
+    line_columns = []
+    
+    for column in numeric_columns:
+        chart_type = chart_type_dict.get(column, 'bar')  # 默认使用柱状图
+        if chart_type.lower() == 'line':
+            line_columns.append(column)
+        else:
+            bar_columns.append(column)
+    
     print(f"检测到的数值列：{numeric_columns}")
+    print(f"柱状图列：{bar_columns}")
+    print(f"折线图列：{line_columns}")
     print(f"数据形状：{df.shape}")
     print(f"图片尺寸：{width} x {height} 英寸")
     print(f"透明背景：{'是' if transparent else '否'}")
@@ -117,7 +137,7 @@ def create_dynamic_combined_chart(df, x_column=None, output_filename="default.pn
     
     # 设置柱状图参数
     x_pos = np.arange(len(df))
-    width_bar = 0.8 / len(numeric_columns)  # 动态调整柱宽
+    width_bar = 0.8 / max(len(bar_columns), 1)  # 动态调整柱宽
     
     # 颜色列表
     colors = ['skyblue',  'orange', 'purple', 'brown', 'pink', 'gray', 'olive', 'cyan',
@@ -127,9 +147,9 @@ def create_dynamic_combined_chart(df, x_column=None, output_filename="default.pn
     
     # 绘制柱状图
     bars = []
-    for i, column in enumerate(numeric_columns):
+    for i, column in enumerate(bar_columns):
         color = colors[i % len(colors)]
-        bar = ax1.bar(x_pos + i * width_bar - (len(numeric_columns) - 1) * width_bar / 2, 
+        bar = ax1.bar(x_pos + i * width_bar - (len(bar_columns) - 1) * width_bar / 2, 
                      df[column], width_bar, label=column, color=color, alpha=0.7)#柱状图透明度降低
         bars.append(bar)
     
@@ -137,7 +157,7 @@ def create_dynamic_combined_chart(df, x_column=None, output_filename="default.pn
     lines = []
     #样式选择
     markers = ['o', 's', '^', 'd', 'v', '<', '>', 'p', '*', 'h']
-    for i, column in enumerate(numeric_columns):
+    for i, column in enumerate(line_columns):
         color = colors[i % len(colors)]
         
         # 根据show_markers参数决定是否显示标记点
@@ -168,10 +188,11 @@ def create_dynamic_combined_chart(df, x_column=None, output_filename="default.pn
     ax2.set_ylabel('趋势值', color='gray')
     
     # 动态生成标题
-    if len(numeric_columns) <= 3:
-        title = f"{'、'.join(numeric_columns)}数据分析 (柱状图+折线图)"
+    all_columns = bar_columns + line_columns
+    if len(all_columns) <= 3:
+        title = f"{'、'.join(all_columns)}数据分析 (柱状图+折线图)"
     else:
-        title = f"多维度数据分析 (柱状图+折线图) - {len(numeric_columns)}个指标"
+        title = f"多维度数据分析 (柱状图+折线图) - {len(all_columns)}个指标"
     
     plt.title(title)
     
@@ -221,7 +242,7 @@ def create_dynamic_combined_chart(df, x_column=None, output_filename="default.pn
     plt.close()
     
     print(f"已生成图表：{output_filename}")
-    print(f"包含 {len(numeric_columns)} 个指标：{numeric_columns}")
+    print(f"包含 {len(all_columns)} 个指标：{all_columns}")
     if x_column:
         print(f"X轴使用列：{x_column}")
 
@@ -257,6 +278,15 @@ if __name__ == '__main__':
     use_transparent = True  # 是否使用透明背景
     show_markers = True  # 是否显示折线图的标记点
     
+    # 指定图表类型字典
+    chart_types = {
+        'GDP价值': 'bar',  # 柱状图
+        '趋势': 'line',   # 折线图
+        # '投资额': 'bar',    # 柱状图
+        # '消费额': 'line'    # 折线图
+    }
+    
     create_dynamic_combined_chart(df, x_column=first_column_name, 
                                  width=image_width, height=image_height, 
-                                 transparent=use_transparent, show_markers=show_markers)
+                                 transparent=use_transparent, show_markers=show_markers,
+                                 chart_type_dict=chart_types)
