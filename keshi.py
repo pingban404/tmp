@@ -70,9 +70,12 @@ def clean_and_convert_data(df, x_column=None):
     
     return df_cleaned
 
-def create_dynamic_combined_chart(df, x_column=None, output_filename="default.png", 
-                                 width=15, height=8, transparent=True, show_markers=True,
-                                 chart_type_dict=None):
+
+
+def create_dynamic_combined_chart(**kwargs):
+# def create_dynamic_combined_chart(df, x_column=None, output_filename="default.png", 
+#                                  width=15, height=8, transparent=True, show_markers=True,
+#                                  chart_type_dict=None):
     """
     创建通用的柱状图+折线图组合
     
@@ -87,12 +90,21 @@ def create_dynamic_combined_chart(df, x_column=None, output_filename="default.pn
     chart_type_dict: dict - 指定每个列使用柱状图还是折线图，格式：{'列名': 'bar'/'line'/'both'}
                       'bar': 柱状图, 'line': 折线图, 'both': 柱状图+折线图, 未指定的列默认使用柱状图
     """
-    
+    df=kwargs.get("df",None)
+    x_column=kwargs.get("x_column",None)
+    output_filename=kwargs.get("output_filename","default.png")
+    width=kwargs.get("width",15)
+    height=kwargs.get("height",8)
+    transparent=kwargs.get("transparent",True)
+    show_markers=kwargs.get("show_markers",True)
+    chart_type_dict=kwargs.get("chart_type_dict",None)
     # 清理和转换数据
     df = clean_and_convert_data(df, x_column)
     
     # 获取所有数值列（排除非数值类型）
     numeric_columns = df.select_dtypes(include=[np.number]).columns.tolist()
+    print(numeric_columns)
+    print('-'*40)
     
     if len(numeric_columns) == 0:
         print("错误：没有找到数值类型的列")
@@ -252,6 +264,9 @@ def create_dynamic_combined_chart(df, x_column=None, output_filename="default.pn
         print(f"X轴使用列：{x_column}")
 
 
+
+
+
 if __name__ == '__main__':
     # 读取数据
     df = pd.read_excel('./Data.xlsx')
@@ -291,7 +306,8 @@ if __name__ == '__main__':
         # '消费额': 'line'    # 折线图
     }
     
-    create_dynamic_combined_chart(df, x_column=first_column_name, 
+    create_dynamic_combined_chart(df=df, x_column=first_column_name, 
                                  width=image_width, height=image_height, 
                                  transparent=use_transparent, show_markers=show_markers,
                                  chart_type_dict=chart_types)
+    

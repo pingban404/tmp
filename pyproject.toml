@@ -5,11 +5,14 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
+    "loguru>=0.7.3",
     "matplotlib>=3.10.3",
     "numpy>=2.3.1",
+    "opencv-python>=4.11.0.86",
     "openpyxl>=3.1.5",
     "pandas>=2.3.0",
     "pyecharts>=2.0.8",
+    "pyinstaller>=6.15.0",
     "rich>=14.0.0",
     "snapshot-selenium>=0.0.2",
 ]
